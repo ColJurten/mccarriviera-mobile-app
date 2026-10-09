@@ -86,7 +86,7 @@ labels below.
 | Dépôt de garantie | Security deposit | CGV Art. 7 |
 | Loyer provisionnel | Provisional rent | CGV Art. 6: paid up front, adjusted at the end |
 | Mode de paiement: ESP · CC | Payment method: cash · card | |
-| Empreinte carte de crédit | Card imprint | Paper imprint area on the current form (see B-10) |
+| Empreinte carte de crédit | Card imprint | Imprint area on the current form. In the app it shows the card brand and the last four digits only (F-09) |
 | v.a.d. (vente à distance) | Remote (card-not-present) charge | |
 | Facture | Invoice | The current form is titled « Contrat / Facture location » (B-04) |
 

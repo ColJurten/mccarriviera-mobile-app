@@ -26,7 +26,7 @@ depends on.
   - answered;
   - covered by a default listed in open-questions § Defaults;
   - an external confirmation (L-xx), tracked in US-092, that doesn't block building.
-- Questions with no default (F-07, T-02) must be answered before the stories that cite them.
+- Questions with no default (T-02) must be answered before the stories that cite them.
 - The acceptance criteria can be checked on a real iPhone or by an automated test.
 
 ## Definition of Done

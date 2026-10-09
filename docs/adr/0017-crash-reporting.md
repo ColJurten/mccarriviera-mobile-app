@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 | Developer, with the client's answers | RECOMMENDED (no question) · F-02 · L-03 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | RECOMMENDED (no question) · F-02 (answered) · L-03 |
 
 ## Context
 
@@ -19,7 +19,7 @@
   - events and breadcrumbs are cleaned of request bodies, URLs with query strings, and text typed by staff;
   - the user is identified by the staff profile ID only.
 - **Readable stack traces:** each event carries the app version, build number and update ID. Source maps are uploaded during EAS builds and updates.
-- **Ownership:** the Sentry organisation belongs to the company, and the developer is a member (default for F-02). A data processing agreement is accepted (L-03, [US-092](../stories/US-092-legal-and-privacy-checklist.md)).
+- **Ownership:** the Sentry organisation is the developer's (F-02). Sentry is one of his sub-processors in the data processing agreement with the company (L-03, [US-092](../stories/US-092-legal-and-privacy-checklist.md)).
 
 ## Consequences
 
@@ -43,6 +43,10 @@
 ## Revisit when
 
 The client refuses another processor (fall back to self-hosting), or the free plan's limits are reached.
+
+## Changes
+
+- 2026-10-09: F-02 answered: the Sentry organisation is the developer's.
 
 ## Implemented by
 

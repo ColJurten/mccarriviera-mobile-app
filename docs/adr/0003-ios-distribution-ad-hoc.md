@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-02, B-11 · F-03 (answered) · F-01, F-02 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-02, B-11 · F-02, F-03 (answered) · F-01 |
 
 ## Context
 
@@ -20,7 +20,7 @@
 
 ## Decision
 
-- **The company holds the membership** (default for F-02): an organisation membership of the Apple Developer Program (99 USD/year), with the developer added as Admin.
+- **The company holds the membership** (F-02, answered 2026-10-09): an organisation membership of the Apple Developer Program (99 USD/year), with the developer added as Admin. The company has the website and the e-mail address on its own domain that Apple asks for.
 - **Apple's requirements for an organisation:**
   - a D-U-N-S number;
   - legal entity status;
@@ -29,11 +29,12 @@
   - a public website on that domain.
 
   Getting a D-U-N-S number and passing Apple's verification can take a week or more, so this starts on day one ([US-001](../stories/US-001-apple-developer-account-and-devices.md)).
-- **If the company can't enrol** (for example, it has no website of its own), the developer's individual membership is a temporary fallback. It is a weaker fit: the licence covers devices of people affiliated with the account holder, and the client's staff are not affiliated with the developer. Moving to the company's account later costs a re-registration and a rebuild, with no data migration.
+- **If Apple refuses the company's enrolment**, the developer's individual membership is a temporary fallback. It is a weaker fit: the licence covers devices of people affiliated with the account holder, and the client's staff are not affiliated with the developer. Moving to the company's account later costs a re-registration and a rebuild, with no data migration.
 - **Distribution:** every build (development, staging, production) goes out with **EAS internal distribution (Ad Hoc)**.
   - Register the two staff iPhones and the developer's test iPhone (his partner's, F-05) with `eas device:create`. The owner opens a link or QR code and installs a small profile.
   - The staff phones' models aren't known yet. At registration, each phone's model and iOS version are recorded and checked against the minimum iOS version of the Expo SDK in use (SDK 56 already required iOS 16.4 or later). A phone that's too old is updated first (default for F-01).
   - Staff install the app from the EAS install link.
+  - EAS runs under the developer's Expo account (F-02) and holds the distribution certificate of the company's Apple team, through his Admin access. If the collaboration ends, the company revokes that certificate and issues a new one (handover procedure, [US-093](../stories/US-093-operations-runbook.md)).
   - JavaScript-only fixes ship with EAS Update. Native changes need a new build and a reinstall.
 - **Requirements on the personal phones** (F-03):
   - Developer Mode turned on;
@@ -57,7 +58,7 @@
 - If the yearly renewal is missed, the app stops opening on staff phones. The runbook and the reminder cover this.
 - Staff must turn on Developer Mode on their personal phones (F-03).
 - A new or replaced phone needs the developer: register it, rebuild, reinstall. That takes a few minutes plus build time.
-- Organisation enrolment needs a website on the company's own domain. If there is none, see the fallback above.
+- Organisation enrolment can take a week or more (D-U-N-S number, Apple's verification). The company has the website and domain e-mail address Apple asks for (F-02).
 
 ## Alternatives considered
 
@@ -71,6 +72,7 @@ The options are in the table above. Custom app and Unlisted both avoid Developer
 ## Changes
 
 - 2026-10-09: F-03 answered (Developer Mode likely acceptable, confirmed at registration); phone models are checked at registration (F-01); the test iPhone is the developer's partner's (F-05).
+- 2026-10-09 (later): F-02 answered: the company holds the Apple account; EAS runs under the developer's Expo account.
 
 ## Implemented by
 

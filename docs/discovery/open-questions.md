@@ -1,6 +1,6 @@
 # Open questions
 
-> **Status (2026-10-09):** all blocking questions B-01 to B-11 are answered and turned into decisions ([`../adr/`](../adr/README.md)). Of the ten follow-ups (F-01 to F-10), five were answered on 2026-10-09 and F-08 partly. F-02, F-07 and F-09 are explained again below and are still open. The R, T and N questions are still open. Where the backlog needed an answer to move on, it uses a **default**, listed in § Defaults so you can confirm or change it.
+> **Status (2026-10-09, evening):** all blocking questions B-01 to B-11 are answered and turned into decisions ([`../adr/`](../adr/README.md)). Of the follow-ups, F-02 to F-07, F-09 and F-10 are answered, F-08 partly, and F-01 is checked when the phones are registered. F-11 (where the files live) was opened on 2026-10-09, and R-10 gained a fifth question the same evening, found while drawing the Retour. The R, T and N questions are still open. Where the backlog needed an answer to move on, it uses a **default**, listed in § Defaults so you can confirm or change it.
 > **How to answer:** write under each **Answer** line, or reply with the IDs (for example "B-03: b").
 > Some questions show a **Suggested default**. This is a recommendation, not an assumption, and it is used only if you confirm it.
 > **Owners:** **You** (developer) · **Client** (MC Car Riviera) · **Lawyer** · **Accountant** · **Bank/PSP**.
@@ -22,15 +22,16 @@
 | **B-10** | Payment-card data and the deposit | Client | Answered → [ADR-0006](../adr/0006-contract-only-scope.md); reading to confirm in F-09 |
 | **B-11** | Ownership, hosting, budget, maintenance | You + client | Answered → [ADR-0003](../adr/0003-ios-distribution-ad-hoc.md), [ADR-0004](../adr/0004-backend-supabase.md), [ADR-0015](../adr/0015-backups.md); follow-ups F-02, F-07 |
 | **F-01** | Staff phones: models and iOS versions | Client | Unknown; checked at registration (US-001), default applied |
-| **F-02** | Who holds the accounts (Apple, Expo, GitHub, Supabase, backups, Sentry) | You + client | Open, explained 2026-10-09; default applied (the company) |
+| **F-02** | Who holds the accounts (Apple, Expo, GitHub, Supabase, backups, Sentry) | You + client | Answered: Apple → the company; the others → the developer |
 | **F-03** | Requirements on personal phones: Developer Mode, passcode, yearly reinstall | Client (staff) | Answered: likely yes; confirmed at registration |
 | **F-04** | Return signature | Client | Answered: mandatory → [ADR-0009](../adr/0009-signatures.md) |
 | **F-05** | A test iPhone for the developer | You | Answered: the partner's iPhone → [ADR-0018](../adr/0018-development-and-test-devices.md) |
 | **F-06** | Totals, costs and number of days | Client | Answered: typed by staff → [ADR-0006](../adr/0006-contract-only-scope.md) |
-| **F-07** | Hosting budget after the free plan | Client | Open, explained 2026-10-09; needed before the pilot |
+| **F-07** | Hosting budget after the free plan | Client | Answered: covered by the developer's maintenance fee |
 | **F-08** | Where the signatures go | Client (+ lawyer) | Partly answered: bottom right of every page; amendment pages still a default |
-| **F-09** | Card fields removed from the contract | Client (+ lawyer) | Open, explained 2026-10-09; default applied |
+| **F-09** | Card fields on the contract | Client (+ lawyer) | Answered: kept (last four digits and expiry only; CVV box empty) |
 | **F-10** | Interior and dashboard photos | Client | Answered: optional → [ADR-0008](../adr/0008-vehicle-condition-model.md) |
+| **F-11** | Where the files live: Supabase Storage or an S3-compatible bucket | You | Open, default applied (Supabase Storage) |
 | R-01 | Layout of the new contract | Client | Open, default applied |
 | R-02 | Fields only the model template has | Client | Open, default applied |
 | R-03 | Client fields and additional drivers | Client | Open, default applied |
@@ -40,7 +41,7 @@
 | R-07 | Deductible, deposit and prepayment | Client | Open, default applied |
 | R-08 | Intermediary | Client | Open, default applied |
 | R-09 | Contract number | Client (+ accountant) | Open, default applied |
-| R-10 | Recording damage | Client | Open, default applied |
+| R-10 | Recording damage | Client | Open, default applied; Q5 added on 2026-10-09 (taking back a photo or damage entry before the client signs) |
 | R-11 | Extension and other changes after signature | Client | Open, default applied |
 | R-12 | Cancellation, vehicle swap, early return | Client | Open, default applied |
 | R-13 | Vehicle statuses and future bookings | Client | Open, default applied |
@@ -254,12 +255,9 @@ The form has a card-imprint area, the expiry date and the CVV, and the client au
 
 > **Answer (2026-10-07):** "everything concerning billing and payment will be handled elsewhere than this application, we only need this for the contract"
 >
-> **Decision:** the app holds no card data and handles no payment or billing. → [ADR-0006](../adr/0006-contract-only-scope.md)
+> **Decision:** the app handles no payment or billing, and never holds a full card number or a CVV. → [ADR-0006](../adr/0006-contract-only-scope.md)
 >
-> **`INTERPRETATION` (default for F-09):**
-> - The card imprint area, the expiry date and the CVV are removed from the PDF.
-> - The payment method (ESP/CC) and the card brand (VISA/AMEX/AUTRE) stay as simple choices, because the template prints them.
-> - The answer doesn't say so explicitly, and you asked to keep every field of the current form, so F-09 asks you to confirm.
+> **Updated by F-09 (2026-10-09):** the card fields stay on the contract, limited to the card brand, the last four digits and the expiry date, with an empty CVV box. The payment method (ESP/CC) also stays as a simple choice.
 
 ### B-11 · Ownership, hosting, budget and maintenance
 **Owner:** you + client · **Changes:** backend choice, distribution setup, long-term support.
@@ -285,10 +283,9 @@ The form has a card-imprint area, the expiry date and the CVV, and the client au
 
 These came out of the answers above and out of the review of the decisions. The answers of 2026-10-09 are recorded under each one.
 
-- **Answered:** F-03, F-04, F-05, F-06, F-10. F-08 is partly answered.
+- **Answered:** F-02, F-03, F-04, F-05, F-06, F-07, F-09, F-10. F-08 is partly answered.
 - **Checked during the work:** F-01, when the phones are registered (US-001).
-- **Still open, with a default meanwhile:** F-02, the rest of F-08, F-09.
-- **Still open, needs an answer:** F-07, before the pilot.
+- **Still open, with a default meanwhile:** the rest of F-08, and F-11 (opened on 2026-10-09).
 
 ### F-01 · Staff phones (was B-02a)
 **Owner:** client · **Needed by:** US-001
@@ -332,7 +329,18 @@ Still open:
 1. Should the accounts be in the company's name (default) or yours?
 2. Does the company have a website on its own domain, and an e-mail address on that domain?
 
-> **Answer (2026-10-09):** "what account are you talking about?" The table above explains them. The two questions remain open.
+> **Answer (2026-10-09):** "what account are you talking about?" The table above explains them.
+>
+> **Answer (2026-10-09, later):** "yes the account for apple developer will be owned by them, all the rest you mentioned will be under my management (expo, github, supabase, backup, monitoring ...)"
+>
+> **Decision:**
+> - The **Apple Developer Program** account is the company's, as an organisation. The company has the website and the e-mail address on its own domain that Apple asks for. You are added as Admin. → [ADR-0003](../adr/0003-ios-distribution-ad-hoc.md)
+> - **Expo, GitHub, Supabase, the backup storage and Sentry** are your accounts. → ADR-0004, ADR-0015, ADR-0016, ADR-0017
+>
+> **Consequences:**
+> - Client personal data is hosted in your accounts, so you act as the company's **data processor**. A written data processing agreement between MC Car Riviera and you is needed, listing your sub-processors (L-03, US-092).
+> - The runbook gets a **handover procedure**: how the Supabase project, the repository, the Expo project and the backup keys pass to the company or a new provider if the collaboration ends (US-093).
+> - The company keeps a sealed copy of the backup keys (ADR-0015).
 
 ### F-03 · Requirements on the staff's personal phones
 **Owner:** client (both staff) · **Needed by:** US-001
@@ -393,7 +401,11 @@ The free plan includes 1 GB of files. At roughly 5 MB per rental (photos, PDFs, 
 
 Which does the client prefer? A rough number of rentals per month would also show when this happens (T-02).
 
-> **Answer (2026-10-09):** "what storage are you talking about? I thought that the application was just the 'frontend', all the backend DB are hosted on a cloud provider". The explanation is above. The question remains open.
+> **Answer (2026-10-09):** "what storage are you talking about? I thought that the application was just the 'frontend', all the backend DB are hosted on a cloud provider". The explanation is above.
+>
+> **Answer (2026-10-09, later):** "this will be part of my 'maintenance' fee so I will be the one handling this"
+>
+> **Decision:** the hosting costs are covered by your maintenance fee, and you decide when and how to scale the storage. Whether the files should move to cheaper S3-compatible storage is F-11. → [ADR-0004](../adr/0004-backend-supabase.md)
 
 ### F-08 · Where the signatures go
 **Owner:** client (+ lawyer, L-01) · **Needed by:** US-040, US-064, US-073, US-075
@@ -427,7 +439,16 @@ One knock-on: the acceptance text says the client authorises charges to « la ca
 
 **Default:** remove the three fields; the wording goes to the lawyer.
 
-> **Answer (2026-10-09):** "what card fields are removed?" The explanation is above. The question remains open: is it OK to remove them?
+> **Answer (2026-10-09):** "what card fields are removed?" The explanation is above.
+>
+> **Answer (2026-10-09, later):** "keep those fields just in case"
+>
+> **Decision:** the three fields stay on the contract, with these limits (`RECOMMENDED`):
+> - the imprint area shows the card brand and the **last four digits** only;
+> - the **expiry date** (MM/YY) can be typed;
+> - the **CVV** box is printed but always left empty.
+>
+> The app has no field for a full card number or a CVV. Card-industry rules forbid keeping a CVV once a payment is authorised, and these PDFs travel by e-mail and messaging. With the last four digits recorded, the acceptance text's « carte désignée sur ce contrat » has something to refer to; the lawyer still reviews it (L-02). → [ADR-0006](../adr/0006-contract-only-scope.md)
 
 ### F-10 · Interior and dashboard photos
 **Owner:** client · **Needed by:** US-026, US-053, US-072
@@ -437,6 +458,38 @@ One knock-on: the acceptance text says the client authorises charges to « la ca
 > **Decision:** interior photos are optional, both in the reference set and at handovers, and so is the dashboard photo (km + fuel). The reference set has 8 required exterior angles. → [ADR-0008](../adr/0008-vehicle-condition-model.md)
 >
 > `INTERPRETATION`: « the inside of the car » covers both the interior angle and the dashboard photo.
+
+### F-11 · Where the files live: Supabase Storage or an S3-compatible bucket
+**Owner:** you (you pay the hosting, F-07) · **Needed by:** US-006
+
+You asked whether a regular Postgres at a cloud provider, or S3 storage, would be cheaper than Supabase, given two staff and very little traffic.
+
+Traffic isn't what costs money at this size. Two things do: the **storage volume** (mostly files) and **what you'd have to build and run yourself**.
+
+A phone app can't talk to Postgres directly: the database credentials would sit on the phones. Something has to stand in between, to:
+
+- handle the staff logins;
+- check every request against the access rules;
+- hand out temporary links to the private files.
+
+Supabase provides that layer: Auth, an API with row-level security, and Storage with signed links. With plain Postgres, you'd write and host it yourself.
+
+| Option | What runs where | Approx. cost per month, before VAT (checked 2026-10-09) | Extra work |
+|---|---|---|---|
+| **A. Supabase for everything** (current plan) | Logins, database, API and files on Supabase | €0 until about 1 GB of files (≈ 200 rentals), then $25 (Pro) | None |
+| **B. Supabase + S3 for the files** (recommended) | Logins, database and API on Supabase Free; files in an EU S3-compatible bucket (e.g. Scaleway Object Storage, Paris) | About €0.016 per GB of files, so cents for years. The text data stays within the free 500 MB for years | 1–2 days: a small server function that checks the staff session and hands out temporary upload and download links |
+| **C. Managed Postgres + S3 + your own API** | Managed Postgres (e.g. Scaleway, smallest instance), an S3 bucket, a small server for your API | About €11.40 (database) + €5.50 (server) + cents (files): about €17 | Weeks: logins, sessions, permissions, the API itself, TLS, updates, monitoring |
+| **D. Self-host everything on one server** | Postgres and the API on a small server (e.g. Hetzner CX23, €5.49 since June 2026), files in S3. It can be self-hosted Supabase, which is open source | About €6–8 | You run it: updates, security, backups and monitoring, for a system holding ID documents |
+
+**Recommendation: B.** It keeps everything Supabase does well, and the $25/month step disappears for years. If costs ever matter more, D with self-hosted Supabase runs the same app code, with no rewrite.
+
+Caveats with B: it's still the Supabase Free plan, so there's no service guarantee, and a project pauses after a week without activity. Daily use and the nightly backup should prevent that. The file storage provider also becomes one of your sub-processors (L-03).
+
+The same comparison, with a sketch of each option, is on the last two pages of [`../architecture/architecture.pdf`](../architecture/architecture.pdf).
+
+**Default:** until you choose, the files stay in Supabase Storage (option A), as decided in ADR-0004 and ADR-0014.
+
+> **Answer:**
 
 ---
 
@@ -452,9 +505,8 @@ While the F, R, T, N and L questions are open, the ADRs and stories use these de
 |---|---|---|
 | B-09 Q1 | Reference set of 8 exterior photos from the in-app camera: front, front-left, left, rear-left, rear, rear-right, right, front-right. Interior photos optional (F-10) | ADR-0008, US-026 |
 | F-01 | Both staff phones are iPhones that can run the Expo SDK's minimum iOS version; checked when they are registered | ADR-0003, US-001 |
-| F-02 | The company holds every account (Apple organisation membership, Expo, GitHub, Supabase, backup storage, Sentry), with the developer added as admin | ADR-0003, ADR-0004, ADR-0015, ADR-0016, ADR-0017, US-001, US-002, US-004, US-008, US-014 |
+| F-11 | The files stay in Supabase Storage, as decided in ADR-0004 and ADR-0014, until the developer chooses between the options in F-11 | ADR-0004, ADR-0014, US-006 |
 | F-08 | Signatures at the bottom right of every page (answered). Default part: page 1 shows the contract as signed at the Départ; amendment pages carry the amendment's own signature there; return values and final amounts are in the Retour section | ADR-0009, ADR-0010, US-040, US-064, US-073, US-075 |
-| F-09 | Card imprint, expiry date and CVV removed. Card brand and payment method kept as simple choices. Acceptance-text wording goes to the lawyer (L-02) | ADR-0006, US-006, US-040, US-052 |
 | R-01 | PDF pages: contract as signed at the Départ; Départ / Retour (condition, return values, « Décompte final »); general terms; amendments. Photos as thumbnails. Title as on the template | ADR-0010, US-040 |
 | R-02 | No model-only field added, apart from the contract number (the field set stays the current template's) | ADR-0010, US-040 |
 | R-03 | Mandatory before signing: name, home address, licence number, date of birth, ID number (the fields filled on the completed sample). A country field is added to the address. One additional driver, stored as a client record, with name, date of birth and licence number mandatory | US-031, US-051 |
@@ -475,7 +527,7 @@ While the F, R, T, N and L questions are open, the ADRs and stories use these de
 | R-18 | Placeholder gold/black theme until the brand assets arrive | ADR-0010, US-003, US-040 |
 | R-19 | Staff name not printed (it isn't on the current template), but recorded in the audit trail | ADR-0010, US-040 |
 | T-03 | Email and password. Face ID app lock when the app opens and after 5 minutes in the background. Password resets done by the developer | ADR-0012, US-010, US-011 |
-| T-04 | Private GitHub repository under the company's organisation | ADR-0016, US-002 |
+| T-04 | Private GitHub repository on the developer's account (F-02) | ADR-0016, US-002 |
 | T-05 | Every PDF archived in the cloud. PDFs cached on the phone are deleted after 7 days and at sign-out | ADR-0013, US-013 |
 | N-01 | Staff app in French, with translation keys ready for English | ADR-0011, US-003 |
 | N-02 | The vehicle record holds only the fields the contract needs (plate, model, colour, fuel type, km, fuel, notes). More can be added later | US-022 |
@@ -596,6 +648,7 @@ The brief says "only photos" for the template, and also says "record damage, tak
 2. When there's nothing new, is one tap on « RAS — Rien à signaler » enough?
 3. Does the client confirm new damage by signing the return?
 4. Are damage costs or charges recorded in the app? (Suggested for the MVP: no.)
+5. *(added 2026-10-09)* Before the client signs a Départ or a Retour, can staff take back a photo or a damage entry they added by mistake? Today every photo and damage entry is insert-only from the moment it is saved, so a mistake would be printed on the PDF the client signs. (Suggested: yes. Until the client signs, staff can withdraw it: it stays stored and in the audit trail, marked « retiré », and is left off the PDF. After the signature nothing can change. This changes the database rules in US-006 and US-007 and the screens in US-053 and US-072.)
 
 > **Answer:**
 
@@ -779,7 +832,7 @@ Update the terms before they are digitised and translated:
 - Whether keeping copies of ID cards and licences is necessary and proportionate.
 - Retention periods for contracts, document copies, signatures and photos.
 - Erasure requests versus the obligation to keep contracts: which wins, and when (applied by US-094).
-- Processor agreements: Supabase, the backup storage provider, Expo and Sentry.
+- A data processing agreement between MC Car Riviera (controller) and the developer (processor), since client data is hosted in his accounts (F-02). His sub-processors: Supabase, the backup storage provider, Expo, Sentry, and the file storage provider if F-11 changes it.
 - The record of processing activities.
 - Staff using their personal phones (B-02): a short written rule for client data on those phones. It should cover what may be shared and where, deleting PDFs, and reporting a lost phone.
 

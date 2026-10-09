@@ -1,0 +1,40 @@
+@startuml 01-system-overview
+' UML deployment diagram: what runs where when the app is in use, and who holds each account.
+!include style.iuml
+skinparam nodesep 40
+skinparam ranksep 55
+
+actor "Staff\n(2 employees)" as staff
+actor "Client\n(renter)" as client
+
+node "Staff iPhone ×2" <<personal phone · Ad Hoc install>> as phone $DEVICE {
+  artifact "MC Car Riviera app\nExpo · React Native · TypeScript" as app
+  database "Keychain\nsession key" as kc
+  folder "App cache\ngenerated PDFs only\ndeleted after 7 days" as cache
+}
+
+cloud "Supabase · EU region · production project" <<developer's account>> as sb $DEVELOPER {
+  component "Auth\nstaff accounts, sessions" as auth
+  component "Data API\nREST + RPC" as api
+  database "PostgreSQL\ntables · row-level security\nserver functions · audit trail" as pg
+  component "Storage\n4 private buckets" as st
+}
+
+cloud "S3-compatible bucket · EU\nthe files, if F-11 picks option B" <<option>> as s3 $OPTION
+cloud "Sentry · EU\ncrash reports, no personal data" <<developer's account>> as sentry $DEVELOPER
+
+component "Nightly backup job\nGitHub Actions" <<developer's account>> as job $DEVELOPER
+cloud "Backup storage · EU\nanother provider · encrypted\nthe job can't delete" <<developer's account>> as bkp $DEVELOPER
+
+staff --> app : uses
+client --> app : signs on the screen
+app --> auth : HTTPS · sign-in, token refresh
+app --> api : HTTPS · JWT on every call
+app --> st : HTTPS · signed links ≤ 5 min
+api --> pg
+st ..> s3 : could move (F-11)
+app ..> sentry : crash reports
+job -up-> pg : database dump
+job -up-> st : new files only
+job -right-> bkp : encrypted copies
+@enduml

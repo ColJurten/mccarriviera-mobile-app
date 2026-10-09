@@ -1,0 +1,82 @@
+@startuml 06-data-fleet
+' UML class diagram, detail: fleet, reference photos, damage and maintenance.
+' {field} keeps PlantUML from reading attributes with brackets as methods.
+!include style.iuml
+hide circle
+hide empty methods
+skinparam nodesep 30
+skinparam ranksep 40
+
+enum VehicleStatus <<enumeration>> {
+  available
+  rented
+  maintenance
+  archived
+}
+
+class Vehicle <<table: vehicles>> {
+  id : uuid
+  plate : text {capitals, unique ignoring spaces and dashes}
+  make_model : text
+  colour : text [0..1]
+  fuel_type : code {default unleaded_95}
+  current_km : integer ≥ 0
+  {field} current_fuel : integer 0–8 (eighths)
+  status : VehicleStatus {server functions only}
+  current_baseline_id : uuid [0..1]
+  notes : text [0..1]
+}
+
+class ConditionBaseline <<table: condition_baselines>> {
+  id : uuid
+  vehicle_id : uuid
+  reason : initial | after_repair | manual
+  taken_at : timestamptz
+  taken_by : uuid
+  --
+  {insert-only}
+}
+
+class Photo <<table: photos>> {
+  id : uuid
+  baseline_id | damage_id | inspection_id : uuid {exactly one}
+  kind : reference | damage | extra | dashboard
+  angle : 8 exterior angles | interior [0..1]
+  storage_path, sha256 : text
+  size_bytes : integer
+  imported : boolean {« importée »: picked from the library}
+  taken_at : timestamptz
+  taken_by : uuid
+  --
+  {insert-only}
+}
+
+class Damage <<table: damages>> {
+  id : uuid
+  vehicle_id : uuid
+  comment : text {at least one photo}
+  status : open | repaired {server functions only}
+  found_in_inspection_id : uuid [0..1]
+  repaired_in_maintenance_id : uuid [0..1]
+  repaired_on : date [0..1]
+}
+
+class MaintenanceRecord <<table: maintenance_records>> {
+  id : uuid
+  vehicle_id : uuid
+  kind : routine | damage_repair | other
+  description : text
+  started_on : date
+  finished_on : date [0..1]
+  odometer_km : integer [0..1]
+}
+
+Vehicle "1" *-- "0..*" ConditionBaseline : history
+Vehicle "0..*" --> "0..1" ConditionBaseline : current
+ConditionBaseline "1" *-- "8..9" Photo : 8 exterior angles\n+ optional interior
+Vehicle "1" *-- "0..*" Damage
+Damage "1" *-- "1..*" Photo
+Vehicle "1" *-- "0..*" MaintenanceRecord
+MaintenanceRecord "0..1" -- "0..*" Damage : repairs
+Vehicle ..> VehicleStatus
+@enduml

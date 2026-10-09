@@ -22,4 +22,4 @@ As a staff member, I want to start a Départ from an available vehicle and have 
 - [ ] If someone else already has a draft on the same vehicle, a warning says so. Only one Départ can be signed per vehicle at a time (database rule, [US-057](US-057-sign-departure-server-function.md)).
 - [ ] « Départ » on a vehicle's detail screen skips straight to choosing the client, with that vehicle.
 - [ ] A draft can be resumed or discarded ([US-056](US-056-resume-or-discard-a-draft.md)).
-- [ ] `docs/user-flows.md` has the Départ flow diagram (Mermaid).
+- [ ] The Départ sequence diagram in `docs/architecture/` matches the flow as built.

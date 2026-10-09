@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-03, B-11 · follow-ups F-02, F-07 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-03, B-11 · F-02, F-07 (answered) · F-11 |
 
 ## Context
 
@@ -15,7 +15,7 @@
 
 ## Decision
 
-- Use **Supabase** in an **EU region** (Paris or Frankfurt). The organisation belongs to the company, and the developer is a member (default for F-02). It provides:
+- Use **Supabase** in an **EU region** (Paris or Frankfurt). The Supabase organisation is the developer's (F-02). He pays the hosting as part of his maintenance fee and decides when to upgrade (F-07). It provides:
   - **Postgres** for all business data, with row-level security (RLS) on every table;
   - **Supabase Auth** for staff accounts ([ADR-0012](0012-authentication-and-authorisation.md));
   - **Supabase Storage** with private buckets only ([ADR-0014](0014-file-storage.md)).
@@ -32,7 +32,7 @@
   - the project is paused;
   - the client wants managed backups.
 
-  File storage (photos, documents, PDFs) will hit its limit first, after roughly 200 rentals (estimate below), so the client should plan for this cost (F-07).
+  File storage (photos, documents, PDFs) will hit its limit first, after roughly 200 rentals (estimate below). The developer, who pays the hosting (F-07), either plans for this cost or moves the files to S3-compatible storage (F-11).
 
 **Free plan limits (2026):** 500 MB database, 1 GB file storage, 5 GB egress a month, 50,000 monthly active users, 2 free projects, paused after a week of inactivity, no backups.
 
@@ -47,8 +47,10 @@
 
 **When the files outgrow the Free plan** (F-07):
 
-- **Supabase Pro** (recommended): $25/month per project, with 100 GB of files, 8 GB of database, 250 GB of egress, daily backups kept 7 days, and no pausing. Only the production project needs it.
-- **Cheaper storage for the files**, for example Cloudflare R2 (10 GB free): the app would need its own code for access control and signed links. That's more work and more risk, so it isn't the default.
+- **Supabase Pro**: $25/month per project, with 100 GB of files, 8 GB of database, 250 GB of egress, daily backups kept 7 days, and no pausing. Only the production project needs it.
+- **S3-compatible storage for the files**, for example Scaleway Object Storage in Paris (about €0.016 per GB per month): the app needs a small server function for access control and temporary links. About 1–2 days of extra work, and the $25/month step disappears for years.
+
+The developer asked whether plain Postgres or S3 storage would be cheaper. The options are compared in F-11 and in `docs/architecture/architecture.pdf`. Until F-11 is answered, the files stay in Supabase Storage (default for F-11).
 
 ## Consequences
 
@@ -63,16 +65,16 @@
 
 - A Free project pauses after a week without activity (for example in a quiet season). The nightly backup connection probably counts as activity, but that isn't guaranteed. Watch for Supabase's pause e-mails, and restore the project from the dashboard if it happens.
 - Both Free projects are taken by staging and production, so there is no spare project for experiments or restore tests ([ADR-0015](0015-backups.md) restores locally).
-- The 1 GB storage limit will be reached. Agree the upgrade cost with the client in advance (F-07).
+- The 1 GB storage limit will be reached. The cost is the developer's (F-07), unless F-11 moves the files to S3-compatible storage.
 - Vendor dependency, limited because Postgres (pg_dump) and S3-compatible storage are portable.
-- Supabase processes client personal data on the company's behalf, so a data processing agreement is needed (L-03).
+- Client personal data sits in the developer's Supabase account (F-02). The developer is the company's processor, and Supabase his sub-processor, so data processing agreements are needed (L-03).
 
 ## Alternatives considered
 
 | Option | Why not chosen |
 |---|---|
 | Firebase (Firestore, Auth, Storage) | A document database fits integrity rules and revisions poorly, and Storage requires the pay-as-you-go plan |
-| Self-hosted on a small VPS (Postgres + API or PocketBase + object storage), about €5/month | Lowest fixed cost, but patching, TLS, backups and monitoring for ID documents all fall on one part-time maintainer. Possible later |
+| Self-hosted on a small VPS (Postgres + API or PocketBase + object storage), about €6–8/month | Lowest fixed cost, but patching, TLS, backups and monitoring for ID documents all fall on one part-time maintainer. Possible later |
 | Custom API (Node or Go) + managed Postgres | More code to write and run, with no benefit at this size |
 | Cloudflare Workers + D1 + R2 | Very cheap storage, but authentication and authorisation would have to be built by hand |
 | Database-only serverless Postgres (e.g. Neon) | Provides the database only; auth and file storage would still be needed |
@@ -84,6 +86,8 @@ An upgrade trigger fires (move to Pro), or the client wants the data on infrastr
 ## Changes
 
 - 2026-10-09: storage estimate and the cheaper alternative added, to help answer F-07.
+- 2026-10-09 (later): F-02 and F-07 answered: the Supabase organisation is the developer's, and he pays the hosting. F-11 opened: files in Supabase Storage or S3-compatible storage.
+- 2026-10-09 (evening): prices rechecked for the architecture PDF. Hetzner's smallest cloud server costs €5.49 a month (before VAT) since 15 June 2026, so the VPS alternative is about €6–8 a month.
 
 ## Implemented by
 

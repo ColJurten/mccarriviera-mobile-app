@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 | Developer, with the client's answers | Brief · B-04, B-09 · defaults for R-15, L-03, L-07 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | Brief · B-04, B-09 · defaults for R-15, L-03, L-07, F-11 |
 
 ## Context
 
@@ -13,6 +13,7 @@
 
 ## Decision
 
+- **Where:** Supabase Storage (default for F-11). F-11 compares it with an S3-compatible bucket; the rules below apply either way.
 - **Private buckets only:**
   - `condition-photos`: reference sets, extra departure photos, damage photos;
   - `client-documents`;
@@ -65,6 +66,10 @@
 ## Revisit when
 
 The storage limit forces a move to Pro or to a different store ([ADR-0004](0004-backend-supabase.md)).
+
+## Changes
+
+- 2026-10-09: F-11 opened: the files could move to an S3-compatible bucket.
 
 ## Implemented by
 

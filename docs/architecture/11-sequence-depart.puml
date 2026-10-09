@@ -1,0 +1,56 @@
+@startuml 11-sequence-depart
+' UML sequence diagram: a Départ, from choosing the car to sharing the signed PDF (US-050 to US-057).
+!include style.iuml
+hide footbox
+autonumber "<b>0."
+
+actor "Staff" as staff
+actor "Client" as client
+participant "App\n(iPhone)" as app
+participant "Data API +\nPostgreSQL" as db
+participant "Storage" as st
+
+== Vehicle · US-050 ==
+staff -> app : « Départ », choose an available car
+app -> db : create the draft contract
+db --> app : car data, current reference set, open damage
+app -> st : signed links for the reference photos (≤ 5 min)
+
+== Client · US-051 ==
+staff -> app : select or create the renter (+ additional driver)
+app -> db : save the client and the draft
+
+== Rental details · US-052 ==
+staff -> app : dates, rates, deductible, card (brand, last 4, expiry),\npricing lines typed by hand
+app -> db : draft saved as it is typed
+
+== Departure condition · US-053 ==
+staff -> app : km out, fuel out (pre-filled, adjustable)
+opt something looks different · dashboard photo (optional)
+  staff -> app : extra photos + comment, dashboard photo
+  app -> st : upload (insert-only)
+end
+
+== Signature · US-054, US-057 ==
+app -> client : recap + general terms (FR / EN)
+client -> app : signs once on the pad
+app -> st : upload the signature image first
+app -> db : rpc sign_departure(draft, signature, idempotency key)
+activate db #F6EFDC
+db -> db : one transaction:\ncheck the draft is complete, the car still available\nand the signature file present\nnumber MCR-YYYY-NNNN · freeze revision 1 + SHA-256\ndeparture inspection · signature evidence\ncontract active · car rented · audit
+alt car taken by another Départ meanwhile
+  db --> app : refused, nothing stored as signed
+  app -> staff : explain, go back
+else signed
+  db --> app : contract number
+end
+deactivate db
+
+== PDF (signed contracts only) · US-055 ==
+staff -> app : choose Français or English
+app -> app : HTML template → A4 PDF (expo-print)\nsignature bottom right of every page
+app -> st : upload the PDF
+app -> db : record the PDF (SHA-256, template and terms versions)
+app -> staff : iOS share sheet
+note over app, db : If the network drops, the app retries the upload and the call\nwith the same idempotency key: never two contracts.
+@enduml

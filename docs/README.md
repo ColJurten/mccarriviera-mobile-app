@@ -22,17 +22,17 @@ running on their personal phones. It replaces the paper « Contrat / Facture loc
 | Topic | Decision | ADR |
 |---|---|---|
 | App technology | React Native + Expo (TypeScript), built in the cloud, so no Mac is needed | [0002](adr/0002-mobile-stack-expo.md) |
-| Distribution | Ad Hoc builds on the staff's registered personal iPhones (Developer Mode on), under the company's Apple account (default for F-02) | [0003](adr/0003-ios-distribution-ad-hoc.md) |
-| Backend | Supabase (Postgres, Auth, Storage) in the EU, starting on the Free plan; no e-mail sending in the MVP | [0004](adr/0004-backend-supabase.md) |
+| Distribution | Ad Hoc builds on the staff's registered personal iPhones (Developer Mode on), under the company's Apple account (F-02) | [0003](adr/0003-ios-distribution-ad-hoc.md) |
+| Backend | Supabase (Postgres, Auth, Storage) in the EU, on the developer's account, starting on the Free plan; hosting paid by the developer (F-02, F-07); no e-mail sending in the MVP. Where the files live is open (F-11) | [0004](adr/0004-backend-supabase.md) |
 | Connectivity | Online only; no offline mode | [0005](adr/0005-online-only.md) |
-| Scope | Contract only. Prices, totals, costs and number of days typed by staff (F-06). No billing, payment or card data (card fields removed, default for F-09) | [0006](adr/0006-contract-only-scope.md) |
+| Scope | Contract only. Prices, totals, costs and number of days typed by staff (F-06). No billing or payment. Card fields kept, but only the last four digits and the expiry date; never a full number or a CVV (F-09) | [0006](adr/0006-contract-only-scope.md) |
 | Contracts and vehicles | Signed data never changes. Amendments are revisions. State changes only through server functions. Full audit trail | [0007](adr/0007-contract-lifecycle-and-audit.md) |
 | Vehicle condition | Reference photos reused at Départ. Damage records. New reference set after a repair | [0008](adr/0008-vehicle-condition-model.md) |
 | Signatures | One signature per handover, at the bottom right of every page, in the same place in French and English (F-08). Departure and return signatures are both mandatory (F-04). Never next to values it doesn't cover: an amendment page carries its own signature (default for F-08) | [0009](adr/0009-signatures.md) |
 | PDF | Rendered on the phone from versioned HTML templates: model layout, current fields, explicit A4 pages | [0010](adr/0010-contract-pdf-generation.md) |
 | Languages | Language-neutral data, FR/EN catalogues, versioned general terms | [0011](adr/0011-localisation.md) |
 | Access and phones | Personal accounts, Face ID lock, row-level security, revocation from the server, minimum data on phones | [0012](adr/0012-authentication-and-authorisation.md), [0013](adr/0013-personal-device-data-protection.md) |
-| Files | Private buckets; evidence can be uploaded and read but never overwritten or deleted; signed URLs valid for 5 minutes at most | [0014](adr/0014-file-storage.md) |
+| Files | Private buckets; evidence can be uploaded and read but never overwritten or deleted; signed URLs valid for 5 minutes at most. In Supabase Storage until F-11 is decided | [0014](adr/0014-file-storage.md) |
 | Backups | Nightly encrypted database dumps plus incremental file copies, off-site, which the CI can't delete | [0015](adr/0015-backups.md) |
 | Repository and delivery | One repository; local, staging and production; CI; EAS builds and over-the-air updates | [0016](adr/0016-repository-environments-ci.md) |
 | Crash reporting | Sentry in the EU, with personal data removed | [0017](adr/0017-crash-reporting.md) |
@@ -41,9 +41,9 @@ running on their personal phones. It replaces the paper « Contrat / Facture loc
 ## Read order (people and coding agents)
 
 1. [`glossary.md`](glossary.md): the French/English rental vocabulary used everywhere.
-2. [`adr/README.md`](adr/README.md): the decisions, and why they were taken.
+2. [`adr/README.md`](adr/README.md): the decisions, and why they were taken. The UML diagrams are in [`architecture/`](architecture/README.md), also as one PDF: [`architecture/architecture.pdf`](architecture/architecture.pdf).
 3. [`stories/README.md`](stories/README.md): the backlog, with phases, Definition of Ready and Done, every story, and the post-MVP list.
-4. [`discovery/open-questions.md`](discovery/open-questions.md): what is still open, follow-ups F-01 to F-10, and the defaults in use.
+4. [`discovery/open-questions.md`](discovery/open-questions.md): what is still open, follow-ups F-01 to F-11, and the defaults in use.
 5. [`discovery/source-analysis.md`](discovery/source-analysis.md): what the reference documents contain (field inventory, signature zones, general-terms rules).
 
 ## Folder layout
@@ -53,6 +53,7 @@ docs/
 ├── README.md               this file
 ├── glossary.md             FR/EN rental vocabulary
 ├── adr/                    architecture decision records, one per file, plus an index
+├── architecture/           UML diagrams (PlantUML sources) and the architecture PDF
 ├── stories/                user stories, one per file, plus the backlog index
 └── discovery/
     ├── source-analysis.md  analysis of the reference documents
@@ -96,11 +97,11 @@ Diagrams are Mermaid code blocks. They render on GitHub and GitLab and stay read
 | A staff phone turns out too old for the app | Models and iOS versions checked at registration (F-01, US-001) |
 | A car returned without its client stays « En cours » until the client signs | The company's process (B-08); the Retour data is saved meanwhile (F-04, US-070) |
 | The PDF layout breaks on device (WebKit print quirks, overflow) | Spike first (US-009); explicit pages, field limits and HTML snapshot tests ([ADR-0010](adr/0010-contract-pdf-generation.md)) |
-| Free plan limits: 1 GB storage, pausing, no backups | Upgrade triggers, budget question F-07, nightly backups ([ADR-0004](adr/0004-backend-supabase.md), [ADR-0015](adr/0015-backups.md)) |
+| Free plan limits: 1 GB storage, pausing, no backups | Upgrades paid by the developer (F-07), files possibly on S3-compatible storage (F-11), nightly backups ([ADR-0004](adr/0004-backend-supabase.md), [ADR-0015](adr/0015-backups.md)) |
 | A drawn signature is weak evidence if contested | Evidence record and hashes; lawyer's review (L-01, [ADR-0009](adr/0009-signatures.md)) |
 | Reused reference photos are weak evidence of the condition at a given handover | Extra photos, optional dashboard photo, damage records ([ADR-0008](adr/0008-vehicle-condition-model.md)) |
 | Client data leaves the app through shared PDFs on personal phones | Minimum data on the phone and a written device-use rule ([ADR-0013](adr/0013-personal-device-data-protection.md), L-03) |
-| One person builds, runs and holds the keys | Company-owned accounts, runbook, sealed copies of the backup keys (F-02, US-093) |
+| One person builds, runs and holds the accounts and keys | Data processing agreement, handover procedure in the runbook, sealed copy of the backup keys for the company (F-02, US-092, US-093) |
 
 ## Where each section of the original brief now lives
 
@@ -108,14 +109,14 @@ Diagrams are Mermaid code blocks. They render on GitHub and GitLab and stay read
 |---|---|---|
 | 1 Product definition · 2 MVP scope | This README, [ADR-0006](adr/0006-contract-only-scope.md), the Must stories | — |
 | 3 Roles and permissions | [ADR-0012](adr/0012-authentication-and-authorisation.md) (single role, default for R-16) | — |
-| 4 Départ · 5 Retour | Stories US-050–057 and US-070–075 | `user-flows.md` with US-050 and US-070 |
+| 4 Départ · 5 Retour | Stories US-050–057 and US-070–075; sequence diagrams in [`architecture/`](architecture/README.md) | Kept up to date with US-050 and US-070 |
 | 6 Inventory · 7 Clients · 8 Maintenance and damage | Stories US-020–026, US-030–034, US-080–083; [ADR-0008](adr/0008-vehicle-condition-model.md) | — |
 | 9 Screens and navigation · 10 UX recommendations | US-003, US-020 and the flow stories | `screens.md` with US-003 |
 | 11 Domain model · 14 Contract lifecycle | [ADR-0007](adr/0007-contract-lifecycle-and-audit.md) (contract and vehicle state diagrams), [ADR-0008](adr/0008-vehicle-condition-model.md) | — |
-| 12 Database schema | Table list in US-006 | `data-model.md` (ERD) with US-006 |
+| 12 Database schema | Table list in US-006; class diagrams in [`architecture/`](architecture/README.md) | Kept in step with the migrations in US-006 |
 | 13 File storage | [ADR-0014](adr/0014-file-storage.md) | — |
 | 15 PDF · 16 Signatures · 17 FR/EN | [ADR-0010](adr/0010-contract-pdf-generation.md), [ADR-0009](adr/0009-signatures.md), [ADR-0011](adr/0011-localisation.md) | — |
-| 18 iOS architecture · 19 Backend · 24 API boundaries | [ADR-0002](adr/0002-mobile-stack-expo.md), [ADR-0004](adr/0004-backend-supabase.md) | `architecture.md` (system diagram, server functions) with US-004 |
+| 18 iOS architecture · 19 Backend · 24 API boundaries | [ADR-0002](adr/0002-mobile-stack-expo.md), [ADR-0004](adr/0004-backend-supabase.md); deployment, component and sequence diagrams in [`architecture/`](architecture/README.md) | Kept up to date with US-004 |
 | 20 Auth · 21 Security and privacy | [ADR-0012](adr/0012-authentication-and-authorisation.md) to [ADR-0015](adr/0015-backups.md), [ADR-0017](adr/0017-crash-reporting.md) | — |
 | 22 Distribution · 23 Offline | [ADR-0003](adr/0003-ios-distribution-ad-hoc.md), [ADR-0005](adr/0005-online-only.md) | — |
 | 25 Implementation phases | [`stories/README.md`](stories/README.md) (P0–P6) | — |

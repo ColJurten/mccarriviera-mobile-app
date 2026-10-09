@@ -1,0 +1,54 @@
+@startuml 02-build-and-release
+' UML deployment diagram: how code becomes an installed app, and where the developer tests it.
+!include style.iuml
+left to right direction
+skinparam nodesep 30
+skinparam ranksep 60
+
+node "Developer PC\nWindows 11 + WSL2" <<device>> as pc {
+  component "Code + Metro bundler" as metro
+  component "Supabase CLI\nlocal stack, database tests" as cli
+  component "Android emulator\nday-to-day UI work" as emu
+}
+
+cloud "GitHub · private repository" <<developer's account>> as gh $DEVELOPER {
+  component "Checks on every pull request\ntypes · lint · tests · contract snapshots\ndatabase tests" as ci
+  component "Database migrations\nstaging: on merge to main\nproduction: on a release tag, after approval" as mig
+}
+
+cloud "Expo EAS" <<developer's account>> as eas $DEVELOPER {
+  component "EAS Build\nbuilds started on purpose\n15 iOS builds a month free" as build
+  component "EAS Update\nJavaScript-only fixes\nchannels: preview, production" as upd
+}
+
+cloud "Apple Developer Program" <<company account>> as apple $COMPANY {
+  component "Distribution certificate\nAd Hoc profile\nregistered iPhones (3)" as cert
+}
+
+cloud "Supabase · EU" <<developer's account>> as sb $DEVELOPER {
+  database "staging project\nsynthetic data only" as stg
+  database "production project\nreal data" as prod
+}
+
+node "Test iPhone\n(partner's)" <<device>> as tphone {
+  artifact "development or\npreview build" as tapp
+}
+node "Staff iPhone ×2" <<device>> as sphone $DEVICE {
+  artifact "production build" as sapp
+}
+
+metro --> gh : git push
+mig --> stg
+mig --> prod
+metro --> build : eas build
+metro --> upd : eas update
+build --> cert : signs with
+build --> tapp : install link
+build --> sapp : install link
+upd ..> sapp : at next launch
+upd ..> tapp : at next launch
+metro ..> emu : live reload
+emu --> stg : HTTPS
+tapp --> stg : HTTPS
+sapp --> prod : HTTPS
+@enduml

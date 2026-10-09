@@ -17,12 +17,12 @@ As the company, I want the legal points checked before the app replaces paper, s
 - [ ] The questions go to the lawyer and the accountant in P0. Their answers can change ADR-0006, ADR-0009 and ADR-0010, and stories US-040, US-041 and US-054. Everything below must be closed before the pilot (US-091).
 - [ ] The lawyer's feedback is recorded on:
   - the signature level, including showing a signature only next to the values it covers (L-01, F-08);
-  - the updated French terms, an approved English version, and the card-charge wording now that no card is recorded (L-02, F-09);
+  - the updated French terms, an approved English version, and the card-charge wording, now that the card is designated by its brand and last four digits only (L-02, F-09);
   - the GDPR notice, copies of ID documents and retention (L-03);
   - the data needed for traffic fines (L-06);
   - retention periods (L-07).
 - [ ] The accountant's feedback on the contract title and invoicing is recorded (L-04).
-- [ ] The data processing agreements with Supabase, the backup storage provider, Expo and the crash-reporting service are accepted, and the record of processing is updated (L-03).
+- [ ] A data processing agreement between the company (controller) and the developer (processor) is signed, since client data is hosted in his accounts (F-02). It lists his sub-processors: Supabase, the backup storage provider, Expo and Sentry, plus the file storage provider if F-11 changes it. The company's record of processing is updated (L-03).
 - [ ] The staff device-use rule (L-03) is written and given to both staff members.
 - [ ] Every resulting change becomes a story before go-live. The retention answers feed US-094.
 

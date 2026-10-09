@@ -1,0 +1,50 @@
+@startuml 04-backend-components
+' UML component diagram of the back end: one Supabase project in the EU, plus the jobs that touch it.
+!include style.iuml
+left to right direction
+skinparam nodesep 16
+skinparam ranksep 55
+
+component "iOS app" as app
+note bottom of app
+  The app holds only the project URL,
+  the public anon key and the staff
+  member's session. Never the
+  service-role key or the storage keys.
+end note
+
+package "Supabase project · EU · developer's account" as sb {
+  component "Auth\nemail + password · no public sign-up\n1-hour tokens · refresh rotation" as auth
+  component "Data API · PostgREST\nevery request runs as the\nsigned-in staff member" as api
+
+  component "Storage · 4 private buckets, no public URL\n<b>condition-photos</b> · upload + read\n<b>signatures</b> · upload + read\n<b>contract-pdfs</b> · upload + read\n<b>client-documents</b> · upload + read + delete\nnobody can overwrite a file" as sto
+
+  package "PostgreSQL" as pg {
+    component "Row-level security\ndeny by default · active staff only\ninsert-only evidence tables" as rls
+    component "Column grants\nstatus columns read-only for the app" as grants
+    component "Server functions · one transaction each\nsign_departure · complete_return\namend_contract · void_contract · discard_draft\ncomplete_baseline · start_maintenance\nfinish_maintenance" as fns
+    component "Tables\nsee the data model" as tables
+    component "Audit triggers\none audit_events row per write" as audit
+  }
+}
+
+package "GitHub Actions · developer's account" as gha {
+  component "Migrations\nstaging on merge · production on release" as mig
+  component "Nightly backup\nholds the database credential\nand the storage S3 keys" as bk
+}
+cloud "Backup storage\nEU · other provider" <<developer's account>> as bkp $DEVELOPER
+
+app --> auth : sign-in
+app --> api : REST + RPC · JWT
+app --> sto : signed links ≤ 5 min
+api --> rls : every query
+api --> fns : RPC
+rls --> tables
+grants --> tables
+fns --> tables
+tables -right-> audit
+mig --> pg : SQL migrations
+bk --> pg : nightly dump
+bk --> sto : copy new files
+bk --> bkp : encrypted
+@enduml

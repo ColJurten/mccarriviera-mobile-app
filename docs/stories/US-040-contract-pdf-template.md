@@ -6,7 +6,7 @@
 
 - **Depends on:** [US-009](US-009-spike-signature-and-pdf-on-iphone.md) · [US-041](US-041-general-terms-per-language.md)
 - **Decisions:** [ADR-0010](../adr/0010-contract-pdf-generation.md) · [ADR-0009](../adr/0009-signatures.md) · [ADR-0011](../adr/0011-localisation.md) · [ADR-0006](../adr/0006-contract-only-scope.md)
-- **Open points:** R-01, R-02, R-18, R-19, F-08, F-09 (see [open questions](../discovery/open-questions.md))
+- **Open points:** R-01, R-02, R-18, R-19, F-08 (see [open questions](../discovery/open-questions.md))
 
 ## Story
 
@@ -22,8 +22,8 @@ As the company, I want a contract that looks like the model template but holds e
   4. amendments, if any.
 - [ ] Pages are explicit A4 blocks. Sections that can grow (photos, terms, amendments) continue on extra pages. Every page repeats the header, the footer and the signature block, at the same position in French and English (B-06, B-07).
 - [ ] The signature block sits at the bottom right of every page, with the « Signature départ » and « Signature retour » boxes (F-08). Amendment pages carry the amendment's own signature there instead of the departure signature (default for F-08).
+- [ ] The card fields are printed as on the current form: the imprint area shows the card brand and the last four digits, then the expiry date if entered, and an empty CVV box (F-09).
 - [ ] These are not printed:
-  - card imprint, expiry date and CVV (default for F-09);
   - fields that exist only on the model template, apart from the contract number (default for R-02);
   - the staff member's name (default for R-19).
 - [ ] The company's details (name, address, SIRET, APE code, phone numbers, logo) come from one configuration file, filled with details the client has confirmed are current.

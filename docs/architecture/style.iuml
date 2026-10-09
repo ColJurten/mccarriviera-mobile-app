@@ -1,0 +1,101 @@
+' Shared look for the MC Car Riviera architecture diagrams.
+' Colours: ink #1D2433 · slate #4A5363 · grey #9AA3B2 · light #F5F6F8
+'          company account (gold) #F6EFDC / #A97E22 · developer accounts (blue-grey) #EDF1F7 / #5A6B86
+' Font sizes must be whole numbers: PlantUML misreads decimals such as 10.5.
+!$COMPANY = "#F6EFDC;line:A97E22;line.bold"
+!$DEVELOPER = "#EDF1F7;line:5A6B86"
+!$OPTION = "#FFFFFF;line:9AA3B2;line.dashed"
+!$DEVICE = "#FFFFFF;line:1D2433;line.bold"
+
+skinparam defaultFontName Inter
+skinparam defaultFontSize 12
+skinparam defaultFontColor #1D2433
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam ArrowColor #4A5363
+skinparam ArrowFontColor #4A5363
+skinparam ArrowFontSize 10
+skinparam ArrowThickness 1.1
+skinparam NoteBackgroundColor #FFF7E0
+skinparam NoteBorderColor #C9A227
+skinparam NoteFontSize 10
+skinparam stereotypeFontSize 9
+skinparam stereotypeFontColor #4A5363
+skinparam hyperlinkUnderline false
+
+skinparam package {
+  BackgroundColor #FFFFFF
+  BorderColor #9AA3B2
+  FontSize 12
+  FontStyle bold
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #9AA3B2
+}
+skinparam component {
+  BackgroundColor #F5F6F8
+  BorderColor #4A5363
+  FontSize 11
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #4A5363
+}
+skinparam node {
+  BackgroundColor #FFFFFF
+  BorderColor #1D2433
+  FontStyle bold
+}
+skinparam cloud {
+  BackgroundColor #F5F6F8
+  BorderColor #4A5363
+}
+skinparam database {
+  BackgroundColor #F5F6F8
+  BorderColor #4A5363
+}
+skinparam artifact {
+  BackgroundColor #FFFFFF
+  BorderColor #1D2433
+}
+skinparam folder {
+  BackgroundColor #FFFFFF
+  BorderColor #9AA3B2
+}
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #1D2433
+}
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #4A5363
+  HeaderBackgroundColor #F5F6F8
+  AttributeFontSize 11
+  FontStyle bold
+}
+skinparam classAttributeIconSize 0
+skinparam state {
+  BackgroundColor #F5F6F8
+  BorderColor #4A5363
+  StartColor #1D2433
+  EndColor #1D2433
+  FontStyle bold
+  AttributeFontSize 11
+  AttributeFontStyle plain
+}
+skinparam sequence {
+  ParticipantBackgroundColor #F5F6F8
+  ParticipantBorderColor #4A5363
+  ActorBackgroundColor #FFFFFF
+  ActorBorderColor #1D2433
+  LifeLineBorderColor #9AA3B2
+  LifeLineBackgroundColor #F6EFDC
+  GroupBorderColor #9AA3B2
+  GroupBackgroundColor #F5F6F8
+  DividerBackgroundColor #F6EFDC
+  DividerBorderColor #A97E22
+  BoxBorderColor #9AA3B2
+}
+skinparam sequenceMessageAlign left

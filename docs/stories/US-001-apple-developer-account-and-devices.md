@@ -6,7 +6,7 @@
 
 - **Depends on:** —
 - **Decisions:** [ADR-0003](../adr/0003-ios-distribution-ad-hoc.md) · [ADR-0018](../adr/0018-development-and-test-devices.md)
-- **Open points:** F-02, F-01 (see [open questions](../discovery/open-questions.md))
+- **Open points:** F-01 (see [open questions](../discovery/open-questions.md))
 
 ## Story
 
@@ -14,8 +14,8 @@ As the developer, I want the company's Apple Developer Program membership with t
 
 ## Acceptance criteria
 
-- [ ] Who holds the accounts is agreed (F-02). By default, the company holds the Apple Developer Program membership as an organisation, and the developer is added as Admin.
-- [ ] Enrolment starts on day one, because these steps can take a week or more. The company requests its free D-U-N-S number if it has none, and checks Apple's other requirements: a legal entity, a person who can sign for the company, a work e-mail on the company's domain, and a public website on that domain.
+- [ ] The company holds the Apple Developer Program membership as an organisation, and the developer is added as Admin (F-02).
+- [ ] Enrolment starts on day one, because these steps can take a week or more. The company requests its free D-U-N-S number if it has none. It already has the website and the e-mail address on its own domain that Apple asks for (F-02), and a person who can sign for the company completes the enrolment.
 - [ ] The membership (99 USD/year) is active, and the developer's Apple account can manage certificates and profiles.
 - [ ] The two staff iPhones and the developer's test iPhone (his partner's, F-05) are registered with `eas device:create`, each under a recognisable name (for example "Staff 1 – iPhone").
 - [ ] For each phone, the model and iOS version are recorded and checked against the minimum iOS version of the Expo SDK in use. A phone that's too old is updated first (default for F-01).

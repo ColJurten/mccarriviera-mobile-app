@@ -1,0 +1,38 @@
+@startuml 09-contract-states
+' UML state machine: the life of a contract (ADR-0007). Every transition is a server function.
+!include style.iuml
+hide empty description
+skinparam nodesep 30
+skinparam ranksep 40
+
+[*] --> Draft : Départ started
+
+state Draft
+Draft : details saved as they are typed
+Draft : the vehicle status doesn't change
+Draft --> [*] : discarded\n/ draft deleted, audited
+
+Draft --> Active : client signs the Départ\n/ number MCR-YYYY-NNNN\n/ revision 1 frozen\n/ vehicle → rented
+
+state Active {
+  state "On rental" as OnRental
+  state "Retour in progress" as ReturnInProgress
+  [*] --> OnRental
+  OnRental --> OnRental : amendment\n/ new revision, own signature\nor « sans signature du client »
+  OnRental --> ReturnInProgress : Retour started
+  ReturnInProgress : saved as it is typed
+  ReturnInProgress : client absent → « en attente de signature »
+}
+
+ReturnInProgress --> Closed : client signs the Retour\n(mandatory, F-04)\n/ vehicle → available
+OnRental --> Void : voided before any Retour,\nwith a reason\n/ vehicle → available
+
+state Closed
+Closed : never edited
+Closed : kept until the retention rules apply (L-07)
+state Void
+Void : never edited
+Void : PDFs watermarked « ANNULÉ / VOID »
+Closed --> [*]
+Void --> [*]
+@enduml

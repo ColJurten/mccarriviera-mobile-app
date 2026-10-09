@@ -1,0 +1,59 @@
+@startuml 13-hosting-options
+' Deployment sketch of the four hosting options compared in F-11 (open question).
+' Blue-grey: run by a provider. Red: code or servers the developer builds and runs himself.
+!include style.iuml
+skinparam nodesep 14
+skinparam ranksep 30
+skinparam rectangle {
+  FontSize 11
+}
+!$MANAGED = "#EDF1F7;line:5A6B86"
+!$YOU = "#FBE9E7;line:B5523B;line.bold"
+!$FILES = "#FFFFFF;line:4A5363"
+
+rectangle "<b>A · Supabase for everything</b>\n<size:10>current plan (default)</size>" as A {
+  rectangle "iOS app" as a0
+  rectangle "Supabase\nAuth · Data API with\nrow-level security" as a1 $MANAGED
+  database "PostgreSQL\n(Supabase)" as a2 $MANAGED
+  rectangle "Supabase Storage\nsigned links" as a3 $MANAGED
+  a0 --> a1
+  a0 --> a3
+  a1 --> a2
+}
+
+rectangle "<b>B · Supabase + S3 for the files</b>\n<size:10>recommended</size>" as B {
+  rectangle "iOS app" as b0
+  rectangle "Supabase\nAuth · Data API with\nrow-level security" as b1 $MANAGED
+  database "PostgreSQL\n(Supabase)" as b2 $MANAGED
+  rectangle "Edge Function you write\nchecks the session,\nsigns short S3 links" as b3 $YOU
+  rectangle "S3 bucket · EU\nprivate" as b4 $FILES
+  b0 --> b1
+  b0 --> b3
+  b0 --> b4
+  b1 --> b2
+  b3 ..> b4
+}
+
+rectangle "<b>C · Managed Postgres + S3 + own API</b>\n<size:10>more to build</size>" as C {
+  rectangle "iOS app" as c0
+  rectangle "API server you build and host\nlogins · sessions · access\nchecks · file links · TLS" as c1 $YOU
+  database "Managed PostgreSQL\n(cloud provider)" as c2 $MANAGED
+  rectangle "S3 bucket · EU\nprivate" as c3 $FILES
+  c0 --> c1
+  c0 --> c3
+  c1 --> c2
+  c1 ..> c3
+}
+
+rectangle "<b>D · Everything on one server</b>\n<size:10>cheapest, most to run</size>" as D {
+  rectangle "iOS app" as d0
+  rectangle "Server (VPS) you run\nPostgreSQL + API, or\nself-hosted Supabase\nupdates · TLS · backups" as d1 $YOU
+  rectangle "S3 bucket · EU\nprivate" as d2 $FILES
+  d0 --> d1
+  d0 --> d2
+  d1 ..> d2
+}
+A -[hidden]right- B
+B -[hidden]right- C
+C -[hidden]right- D
+@enduml

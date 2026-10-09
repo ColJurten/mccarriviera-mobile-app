@@ -6,7 +6,7 @@
 
 - **Depends on:** [US-050](US-050-start-a-depart.md)
 - **Decisions:** [ADR-0006](../adr/0006-contract-only-scope.md) · [ADR-0011](../adr/0011-localisation.md) · [ADR-0005](../adr/0005-online-only.md)
-- **Open points:** R-05, R-07, R-08, F-09 (see [open questions](../discovery/open-questions.md))
+- **Open points:** R-05, R-07, R-08 (see [open questions](../discovery/open-questions.md))
 
 ## Story
 
@@ -21,7 +21,7 @@ As a staff member, I want to complete the rental terms with sensible defaults, s
 - [ ] Intermediary: free text, defaulting to « MC CAR RIVIERA », with an optional phone (default for R-08).
 - [ ] « Conditions & tarifs », all optional and typed by staff: daily rate for 1–3 days, daily rate for 4–7 days, extra day, km included, package price with its number of days, price per extra km.
 - [ ] Deductible: card brand (VISA, AMEX, AUTRE), theft amount and at-fault accident amount. All are optional, with a warning if empty, since CGV Art. 5-4 refers to them (default for R-07).
-- [ ] Payment method: ESP or CC, optional. There are no card number, expiry or CVV fields (default for F-09).
+- [ ] Payment method: ESP or CC, optional. Card: brand (VISA, AMEX, AUTRE, from the deductible block), last four digits and expiry date (MM/YY), all optional. There is no field for a full card number or a CVV (F-09, [ADR-0006](../adr/0006-contract-only-scope.md)).
 - [ ] The pricing block is typed by hand: Location, J/Sup, Km Sup, Total HT location, Assurance −25 ans, Conducteur sup, Livraison, Options I–III, Carburant, Divers, Total HT, TVA 20 %, Total TTC, Total prépayé, Solde. Totals, costs and the number of rental days are typed too; nothing is calculated (F-06).
 - [ ] Amounts have 2 decimals. Only « Solde » may be negative, for a refund (`RECOMMENDED`).
 - [ ] Before signing, the app checks:

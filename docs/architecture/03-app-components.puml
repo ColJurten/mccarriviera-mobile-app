@@ -1,0 +1,75 @@
+@startuml 03-app-components
+' UML component diagram of the front end: the iOS app built with Expo.
+' Arrows go from the part that uses to the part that is used. Hidden links only arrange the boxes.
+!include style.iuml
+skinparam nodesep 16
+skinparam ranksep 30
+
+package "MC Car Riviera app · Expo · React Native · TypeScript" as appPkg {
+
+  package "Screens · Expo Router · in French" as screens {
+    component "Sign-in, app lock\n<size:9><color:#5A6B86>US-010, US-011</color></size>" as sSign
+    component "Home\n<size:9><color:#5A6B86>US-020</color></size>" as sHome
+    component "Vehicles\n<size:9><color:#5A6B86>US-021 – 026</color></size>" as sVeh
+    component "Clients\n<size:9><color:#5A6B86>US-030 – 034</color></size>" as sCli
+    component "Départ flow\n<size:9><color:#5A6B86>US-050 – 056</color></size>" as sDep
+    component "Active rentals\n<size:9><color:#5A6B86>US-060 – 064</color></size>" as sCon
+    component "Retour flow\n<size:9><color:#5A6B86>US-070 – 075</color></size>" as sRet
+    component "Maintenance\n<size:9><color:#5A6B86>US-080 – 083</color></size>" as sMai
+    sSign -[hidden]right- sHome
+    sHome -[hidden]right- sVeh
+    sVeh -[hidden]right- sCli
+    sCli -[hidden]right- sDep
+    sDep -[hidden]right- sCon
+    sCon -[hidden]right- sRet
+    sRet -[hidden]right- sMai
+  }
+
+  package "Data layer · nothing stored" as data {
+    component "Forms\nreact-hook-form + zod" as forms
+    component "Query hooks\nTanStack Query, in memory" as hooks
+    component "Typed Supabase client\ntypes from the schema" as client
+    forms -[hidden]right- hooks
+  }
+
+  package "Contract document · US-040 – 042" as doc {
+    component "PDF renderer\nexpo-print, A4" as pdf
+    component "HTML templates\nversioned" as tpl
+    component "FR / EN\ncatalogues" as i18n
+  }
+
+  package "Device services · Expo modules" as dev {
+    component "Camera\nresize, no location" as cam
+    component "Signature pad\nspike US-009" as sig
+    component "Image viewer\nmemory cache" as img
+    component "Document\npicker" as pick
+    component "Share sheet" as share
+    component "Session store\nKeychain key" as kc
+    component "Face ID lock\n<size:9><color:#5A6B86>US-011</color></size>" as lock
+    component "Crash reporter\n<size:9><color:#5A6B86>US-014</color></size>" as crash
+    cam -[hidden]right- sig
+    sig -[hidden]right- img
+    img -[hidden]right- pick
+    share -[hidden]right- kc
+    kc -[hidden]right- lock
+    lock -[hidden]right- crash
+    cam -[hidden]down- share
+  }
+}
+
+interface "Auth API" as iAuth
+interface "Data API\nREST + RPC" as iData
+interface "Storage API\nsigned links" as iSto
+interface "EAS Update" as iUpd
+
+screens --> data : read and write
+screens --> doc : print a contract
+screens --> dev : photos, signatures,\nfiles, sharing
+hooks --> client
+pdf --> tpl
+pdf --> i18n
+client --> iAuth
+client --> iData
+client --> iSto
+appPkg ..> iUpd : JavaScript updates
+@enduml

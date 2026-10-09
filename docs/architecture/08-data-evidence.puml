@@ -1,0 +1,83 @@
+@startuml 08-data-evidence
+' UML class diagram, detail: what each handover records — inspections, signatures and generated PDFs.
+' Grey classes are drawn in full on the previous diagrams.
+' {field} keeps PlantUML from reading attributes with brackets as methods.
+!include style.iuml
+hide circle
+hide empty methods
+hide empty fields
+skinparam nodesep 26
+skinparam ranksep 40
+
+class Contract <<table: contracts>> #F5F6F8 {
+}
+class ContractRevision <<table: contract_revisions>> #F5F6F8 {
+}
+class ConditionBaseline <<table: condition_baselines>> #F5F6F8 {
+}
+class Damage <<table: damages>> #F5F6F8 {
+}
+class Photo <<table: photos>> #F5F6F8 {
+}
+class TermsVersion <<table: terms_versions>> #F5F6F8 {
+}
+class PricingLines <<datatype>> #F5F6F8 {
+}
+
+class Inspection <<table: inspections>> {
+  id : uuid
+  contract_id : uuid
+  stage : departure | return
+  status : in_progress | completed
+  at : timestamptz
+  km : integer
+  {field} fuel : integer 0–8 (eighths)
+  baseline_id : uuid [0..1] {departure}
+  open_damage_ids : uuid[] {departure, as at signing}
+  ras : boolean {return}
+  final_pricing : PricingLines [0..1] {return}
+  comment : text [0..1]
+  --
+  {insert-only once completed}
+}
+
+class Signature <<table: signatures>> {
+  id : uuid
+  contract_id : uuid
+  revision_no : integer
+  stage : departure | amendment | return
+  image_path, image_sha256 : text
+  strokes_path : text [0..1]
+  signed_at : timestamptz {server time}
+  staff_id : uuid
+  device_model, ios_version, app_version : text
+  snapshot_sha256 : text
+  terms_version_ids : uuid[]
+  --
+  {insert-only}
+}
+
+class ContractDocument <<table: contract_documents>> {
+  id : uuid
+  contract_id : uuid
+  revision_no : integer
+  stage : departure | amendment | final
+  language : fr | en
+  template_version : text
+  terms_version_id : uuid
+  storage_path, sha256 : text
+  --
+  {insert-only}
+}
+
+Contract "1" *-- "0..2" Inspection : departure, return
+Contract "1" *-- "0..*" Signature
+Contract "1" *-- "0..*" ContractDocument
+Inspection "0..*" --> "0..1" ConditionBaseline : departure reference set
+Inspection "0..*" --> "0..*" Damage : open at departure
+Inspection "0..1" -- "0..*" Damage : found at Retour
+Inspection "1" *-- "0..*" Photo : extra and\ndashboard photos
+Inspection ..> PricingLines : final amounts
+Signature "0..*" --> "1" ContractRevision : covers
+ContractDocument "0..*" --> "1" TermsVersion : printed with
+@enduml

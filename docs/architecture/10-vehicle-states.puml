@@ -1,0 +1,24 @@
+@startuml 10-vehicle-states
+' UML state machine: the status of a vehicle (ADR-0007, ADR-0008). Every transition is a server function.
+!include style.iuml
+hide empty description
+skinparam nodesep 34
+skinparam ranksep 46
+
+state "Available\n« Disponible »" as Available
+state "Rented\n« En cours »" as Rented
+state "Maintenance" as Maintenance
+state "Archived\n« Archivé »" as Archived
+
+[*] --> Available : vehicle added
+Available : a Départ needs a
+Available : complete reference photo set
+Available --> Rented : Départ signed
+Rented --> Available : Retour signed\nor contract voided
+Available --> Maintenance : maintenance started
+Maintenance --> Available : routine maintenance finished
+Maintenance --> Available : repair finished\n[new reference set complete]
+Available --> Archived : archived
+Maintenance --> Archived : archived
+Archived --> Available : restored
+@enduml

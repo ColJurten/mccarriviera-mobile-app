@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 | Developer, with the client's answers | B-11 · defaults for F-02, L-03, L-07 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-11 · F-02 (answered) · defaults for L-03, L-07 |
 
 ## Context
 
@@ -25,7 +25,7 @@
   4. **Copy files incrementally:** `rclone copy` to an rclone `crypt` remote (contents and names encrypted), under `files/`.
      - Files are never modified after upload ([ADR-0007](0007-contract-lifecycle-and-audit.md)), so each file is copied once.
      - The job never deletes anything.
-- **Where:** an EU-located, S3-compatible bucket owned by the company (default for F-02). Examples: Backblaze B2 in an EU region, or Cloudflare R2 with EU jurisdiction.
+- **Where:** an EU-located, S3-compatible bucket, held by the developer (F-02), with a different provider from the one holding the files. Examples: Backblaze B2 in an EU region, or Cloudflare R2 with EU jurisdiction.
   - Their free tiers (about 10 GB) last a long time, since each file is stored once.
   - Beyond that, it costs a few euros a month.
 - **Retention** (`RECOMMENDED`; L-07 may change it):
@@ -34,7 +34,7 @@
 - **Credentials:**
   - The Supabase S3 keys and the database credential give full access. They live only in the protected CI environment, are treated like the service-role key, and are rotated if exposed.
   - The CI key for the backup bucket can write and list, but **not delete**. A leaked CI secret therefore can't destroy backups, and retention is left to the lifecycle rules.
-  - The `age` private key and the rclone crypt password are kept offline by the developer (password manager), with a sealed copy for the company. Losing them means losing the backups.
+  - The `age` private key and the rclone crypt password are kept offline by the developer (password manager), with a sealed copy for the company. Losing them means losing the backups. With that copy and the runbook's restore procedure, the company can restore without the developer.
 - **Egress:** a few MB of dump per night, plus each new file once. This stays well within 5 GB a month.
 - **Monitoring:** the workflow alerts on failure, and a weekly check confirms the latest dump exists.
 - **Restore test:** before the pilot, then every quarter.
@@ -70,6 +70,10 @@
 ## Revisit when
 
 The project moves to Pro, or retention rules (L-07) change.
+
+## Changes
+
+- 2026-10-09: F-02 answered: the backup bucket is held by the developer; it must be with a different provider from the files.
 
 ## Implemented by
 

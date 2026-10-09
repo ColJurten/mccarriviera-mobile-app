@@ -6,7 +6,7 @@
 
 - **Depends on:** [US-008](US-008-nightly-encrypted-backups.md) · [US-092](US-092-legal-and-privacy-checklist.md) · [US-093](US-093-operations-runbook.md) · [US-094](US-094-retention-and-erasure.md)
 - **Decisions:** [ADR-0003](../adr/0003-ios-distribution-ad-hoc.md)
-- **Open points:** F-07 (see [open questions](../discovery/open-questions.md))
+- **Open points:** — (see [open questions](../discovery/open-questions.md))
 
 ## Story
 
@@ -15,7 +15,7 @@ As the company, we want to run real handovers on the staff phones, with paper as
 ## Acceptance criteria
 
 - [ ] Every Must story of phases P0 to P5 is done, and so are US-008, US-092, US-093 and US-094.
-- [ ] The hosting budget for after the Free plan is agreed (F-07).
+- [ ] The data processing agreement between the company and the developer is signed (F-02, L-03).
 - [ ] Both staff phones have the production build installed (Developer Mode on) and their own accounts.
 - [ ] A written test script covers:
   - adding a vehicle;

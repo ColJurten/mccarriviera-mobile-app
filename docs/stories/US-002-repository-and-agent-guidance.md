@@ -6,7 +6,7 @@
 
 - **Depends on:** —
 - **Decisions:** [ADR-0016](../adr/0016-repository-environments-ci.md) · [ADR-0001](../adr/0001-record-architecture-decisions.md)
-- **Open points:** T-04, N-06, F-02 (see [open questions](../discovery/open-questions.md))
+- **Open points:** T-04, N-06 (see [open questions](../discovery/open-questions.md))
 
 ## Story
 
@@ -14,7 +14,7 @@ As the developer, I want one repository for the app, the database and the docs, 
 
 ## Acceptance criteria
 
-- [ ] A private GitHub repository under the company's organisation (default for T-04), with folders `app/`, `supabase/`, `docs/`, `scripts/`.
+- [ ] A private GitHub repository on the developer's account (F-02; default for T-04), with folders `app/`, `supabase/`, `docs/`, `scripts/`.
 - [ ] `docs/` contains this documentation set. The scanned reference PDFs are not committed (ignored, or kept outside the repo).
 - [ ] A root `AGENTS.md`, and a `CLAUDE.md` that points to it, say: start from `docs/README.md`, follow the ADRs, never use real customer data, and how to run the checks (default for N-06).
 - [ ] TypeScript strict mode, ESLint and Prettier are configured. `npm run check` runs typecheck, lint and tests.

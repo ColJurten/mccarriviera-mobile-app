@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | defaults for T-04, N-06 · F-02 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | F-02 (answered) · defaults for T-04, N-06 |
 
 ## Context
 
@@ -19,7 +19,7 @@
   - `docs/`: this documentation;
   - `scripts/`: backup, admin, import, erasure.
 - **Agent guidance:** a root `AGENTS.md`, with `CLAUDE.md` pointing to it, tells coding agents to start from `docs/README.md` (default for N-06).
-- **Git host:** a private GitHub repository under an organisation owned by the company (default for T-04 and F-02). It also runs CI and the backup workflow.
+- **Git host:** a private GitHub repository on the developer's account (F-02; default for T-04). It also runs CI and the backup workflow.
 - **Environments:**
   - **local:** Supabase CLI in Docker on WSL2, for migrations and database tests. The Metro bundler also runs in WSL2. The phone reaches it through WSL mirrored networking (Windows 11) or `expo start --tunnel`.
   - **development builds on the phone:** use the **staging** backend, because the phone can't reach the local stack inside WSL2.
@@ -40,7 +40,7 @@
   - the app only gets the public URL and the anon key for each environment, through EAS environment variables;
   - the service-role key, the storage S3 keys and the backup credentials live only in protected CI environments.
 - **Working style:** short-lived branches, pull requests that cite story and ADR IDs, and a protected main branch.
-- **Docs written alongside the stories:** `testing.md` (US-002), `screens.md` (US-003), `architecture.md` (US-004), `data-model.md` (US-006), `user-flows.md` (US-050, US-070) and `runbook.md` (US-093).
+- **Docs written alongside the stories:** `testing.md` (US-002), `screens.md` (US-003) and `runbook.md` (US-093). The UML diagrams in `architecture/` (first version 2026-10-09) are kept up to date by US-004, US-006, US-050 and US-070.
 
 ## Consequences
 
@@ -70,6 +70,7 @@ A second developer joins, or the free build quota becomes a bottleneck.
 ## Changes
 
 - 2026-10-09: Android emulator added for day-to-day work (ADR-0018).
+- 2026-10-09 (later): F-02 answered: the repository is on the developer's account. The UML diagrams in `architecture/` replace the planned `architecture.md`, `data-model.md` and `user-flows.md`.
 
 ## Implemented by
 

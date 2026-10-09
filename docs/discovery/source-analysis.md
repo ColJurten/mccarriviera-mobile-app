@@ -270,7 +270,7 @@ This table shows the overlap and what remains open.
 | Deposit | CGV Art. 7 / « Total prépayé »? | Deposit | `OPEN` (R-07) |
 | Pricing lines, HT / TVA / TTC, prepaid, balance | yes | – | Keep. Invoice status `OPEN` (B-04) |
 | Payment method | ESP / CC | – | Keep |
-| Card imprint, expiry, CVV | yes | – | Not recommended (B-10) |
+| Card imprint, expiry, CVV | yes | – | Kept: brand and last four digits, expiry date; CVV box always empty (F-09) |
 | Intermediary + phone | yes | – | Keep. Meaning `OPEN` (R-08) |
 | Staff / pick-up driver | – | yes | `OPEN` (R-19) |
 | Damage recording | outline + legend + 2 lines, plus the model-drawings page | generic outline | Photos only (`CONFIRMED`, brief). Comments `OPEN` (R-10) |

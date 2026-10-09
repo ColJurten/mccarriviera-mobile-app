@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-04, B-05, B-10 · F-06 (answered) · F-09 · L-02, L-04, L-05 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | B-04, B-05, B-10 · F-06, F-09 (answered) · L-02, L-04, L-05 |
 
 ## Context
 
@@ -17,7 +17,7 @@
   - no invoice numbering;
   - no price calculation from rates;
   - no payment processing;
-  - no card data.
+  - no full card number and no CVV.
 - **What the PDF keeps:** all of the template's information, including:
   - the « Conditions & tarifs » box;
   - the deductible block, with the card brand (VISA / AMEX / AUTRE) as a simple choice;
@@ -30,23 +30,26 @@
 - **Kilometres** are computed (default for R-06), because they are measurements, not prices (meeting notes: « Km retour = km total »):
   - km driven = km in − km out;
   - extra km = max(0, km driven − km included).
-- **Removed from the template** (default for F-09): the card imprint area, the expiry date and the CVV.
-  - This is an `INTERPRETATION` of B-10 ("payment handled elsewhere") and a `RECOMMENDED` security choice: PCI DSS forbids keeping a CVV after authorisation.
-  - The acceptance text still authorises charges to « la carte de crédit désignée sur ce contrat ». With no card recorded, the lawyer must reword it (L-02).
+- **Card fields** (F-09, answered 2026-10-09: keep them): the card imprint area, the expiry date and the CVV stay on the contract, with these limits (`RECOMMENDED`):
+  - the imprint area shows the card brand and the last four digits only;
+  - the expiry date (MM/YY) can be typed;
+  - the CVV box is printed but always left empty.
+
+  The app has no field for a full card number or a CVV. Card-industry rules (PCI DSS) forbid keeping a CVV once a payment is authorised, and a full card number would bring PCI DSS obligations, for PDFs that are shared by e-mail and messaging. With the last four digits recorded, « la carte de crédit désignée sur ce contrat » in the acceptance text has something to refer to; the lawyer still reviews the wording (L-02).
 - **Title:** stays « CONTRAT / FACTURE LOCATION », as on the template (B-04). If the accountant says a document titled « facture » must follow invoice rules (L-04), it becomes « CONTRAT DE LOCATION », a one-line change in the label catalogue.
 
 ## Consequences
 
 **Positive**
 
-- The app stays out of invoicing compliance (including the e-invoicing reform) and out of PCI DSS scope.
+- The app stays out of invoicing compliance (including the e-invoicing reform). It never holds a full card number or a CVV, so it stays out of PCI DSS scope.
 - The data model for amounts stays simple.
 
 **Negative / risks**
 
 - Hand-typed totals can be inconsistent with the lines. An automatic sum can be added later if wanted.
 - By design, the amounts stored in the app aren't usable for accounting.
-- The card-charge authorisation needs new wording (F-09, L-02).
+- The lawyer reviews the card-charge wording of the acceptance text (L-02).
 
 ## Alternatives considered
 
@@ -54,15 +57,16 @@
 |---|---|
 | Prices computed from rate cards | Ruled out by B-05 |
 | The app as the invoicing system | Ruled out by B-10 |
-| Keep card details on the contract | Payment is handled elsewhere (B-10), and it would bring PCI DSS obligations |
+| Full card number and CVV on the contract | Card-industry rules forbid keeping a CVV after authorisation, and a full number would bring PCI DSS obligations |
 
 ## Revisit when
 
-The company wants the app to calculate prices, totals or invoices, or F-09 is answered differently.
+The company wants the app to calculate prices, totals or invoices.
 
 ## Changes
 
 - 2026-10-09: F-06 answered: totals, costs and the number of rental days are typed by staff.
+- 2026-10-09 (later): F-09 answered: the card fields stay, limited to the last four digits and the expiry date, with an empty CVV box (they were removed by default).
 
 ## Implemented by
 

@@ -1,0 +1,109 @@
+@startuml 07-data-contracts
+' UML class diagram, detail: clients, contracts, revisions and the contract terms.
+' {field} keeps PlantUML from reading attributes with brackets as methods.
+!include style.iuml
+hide circle
+hide empty methods
+skinparam nodesep 26
+skinparam ranksep 36
+
+class Client <<table: clients>> {
+  id : uuid
+  full_name : text
+  street, line2, postcode, city, country : text [0..1]
+  phone : text [0..1]
+  local_address, local_phone : text [0..1]
+  licence_number : text [0..1]
+  birth_date : date [0..1]
+  birth_place_or_country : text [0..1]
+  id_doc_type : passport | id_card [0..1]
+  id_doc_number, id_doc_country : text [0..1]
+  --
+  {only the name is needed to save;
+  the rest is checked before a Départ is signed}
+}
+
+class ClientDocument <<table: client_documents>> {
+  id : uuid
+  client_id : uuid
+  type : licence | id_card | passport | other
+  label : text [0..1]
+  storage_path, sha256 : text
+  size_bytes : integer {≤ 10 MB}
+}
+
+class Contract <<table: contracts>> {
+  id : uuid
+  number : text [0..1] {MCR-YYYY-NNNN, set at signature}
+  vehicle_id : uuid
+  status : draft | active | closed | void {server functions only}
+  current_revision_no : integer
+  void_reason : text [0..1]
+}
+
+class ContractDriver <<table: contract_drivers>> {
+  contract_id : uuid
+  client_id : uuid
+  role : renter | additional
+  --
+  {one renter, at most one additional driver}
+}
+
+class ContractRevision <<table: contract_revisions>> {
+  id : uuid
+  contract_id : uuid
+  revision_no : integer
+  kind : departure | amendment
+  terms : ContractTerms {full snapshot}
+  terms_version_fr_id, terms_version_en_id : uuid [0..1]
+  snapshot_sha256 : text
+  reason : text [0..1] {amendments}
+  client_signed : boolean
+  signed_at : timestamptz [0..1]
+  --
+  {editable while unsigned, then insert-only}
+}
+
+class ContractTerms <<datatype>> {
+  renter, additional driver, vehicle : as printed
+  departure_at : timestamptz
+  planned_return : date + time [0..1]
+  return_place, intermediary, intermediary_phone : text [0..1]
+  rates : 1–3 days, 4–7 days, extra day, package, km included, extra km
+  {field} deductible_theft, deductible_accident : numeric(10,2) [0..1]
+  card_brand : visa | amex | other [0..1]
+  payment_method : cash | card [0..1]
+  card_last4 : exactly 4 digits [0..1]
+  card_expiry : MM/YY [0..1]
+  pricing : PricingLines
+  --
+  {no full card number, no CVV (F-09)}
+}
+
+class PricingLines <<datatype>> {
+  {field} rental, extra_days, extra_km, rental_total_ht : numeric(10,2) [0..1]
+  {field} under_25_insurance, extra_driver, delivery : numeric(10,2) [0..1]
+  {field} option_1, option_2, option_3, fuel, misc : numeric(10,2) [0..1]
+  {field} total_ht, vat_20, total_ttc, total_prepaid : numeric(10,2) [0..1]
+  {field} balance : numeric(10,2) [0..1] {may be negative}
+  rental_days : integer [0..1]
+  --
+  {all typed by staff, nothing calculated (F-06)}
+}
+
+class TermsVersion <<table: terms_versions>> {
+  id : uuid
+  language : fr | en
+  version_label : text
+  effective_from : date
+  body_pages : text[] {already split into pages}
+}
+
+Client "1" *-- "0..*" ClientDocument
+Contract "1" *-- "1..2" ContractDriver
+ContractDriver "0..*" --> "1" Client
+Contract "1" *-- "1..*" ContractRevision
+ContractRevision *-- ContractTerms
+ContractTerms *-- PricingLines
+ContractRevision "0..*" --> "1..2" TermsVersion : printed with
+@enduml

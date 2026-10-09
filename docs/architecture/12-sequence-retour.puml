@@ -1,0 +1,56 @@
+@startuml 12-sequence-retour
+' UML sequence diagram: a Retour, with the mandatory client signature (US-070 to US-075).
+!include style.iuml
+hide footbox
+autonumber "<b>0."
+
+actor "Staff" as staff
+actor "Client" as client
+participant "App\n(iPhone)" as app
+participant "Data API +\nPostgreSQL" as db
+participant "Storage" as st
+
+== Open the rental · US-070 ==
+staff -> app : « Retour », choose the active rental
+app -> db : load the contract as last amended, departure data, open damage
+app -> st : signed links for the reference photos (≤ 5 min)
+
+== Check-in · US-071 to US-073 ==
+staff -> app : return time, km in, fuel in
+app -> app : km driven, extra km
+alt new damage
+  loop each new damage
+    staff -> app : at least one photo + a comment
+    app -> st : upload the photos (insert-only)
+    app -> db : save as open damage, linked to this Retour
+  end
+else nothing new
+  staff -> app : « RAS »
+end
+opt dashboard photo (optional)
+  staff -> app : photo of km and fuel
+  app -> st : upload (insert-only)
+end
+staff -> app : final pricing lines, typed by hand
+app -> db : Retour saved as it is typed (in progress)
+
+== Signature, mandatory · US-074 ==
+alt client present
+  app -> client : recap: km, fuel, new damage or RAS, final amounts
+  client -> app : signs once on the pad
+  app -> st : upload the signature image first
+  app -> db : rpc complete_return(contract, signature, idempotency key)
+  activate db #F6EFDC
+  db -> db : one transaction:\nreturn inspection completed · final amounts\nsignature evidence · car km and fuel\ncontract closed · car available · audit
+  db --> app : closed
+  deactivate db
+  staff -> app : choose Français or English (US-075)
+  app -> app : final PDF: Départ and Retour,\nboth signatures bottom right of every page
+  app -> st : upload the PDF
+  app -> db : record the PDF (stage final)
+  app -> staff : iOS share sheet
+else client absent
+  app -> staff : « Retour en attente de signature »
+  note right of app : The contract stays active and the car « En cours ».\nThe company contacts the client (B-08), and the\nRetour is finished when the client signs.
+end
+@enduml

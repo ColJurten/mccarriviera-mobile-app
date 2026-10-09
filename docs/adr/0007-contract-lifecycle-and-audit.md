@@ -2,7 +2,7 @@
 
 | Status | Date | Decided by | Based on |
 |---|---|---|---|
-| **Accepted** | 2026-10-07 | Developer, with the client's answers | Brief · B-06, B-08 · defaults for R-09, R-11, R-12, R-13 |
+| **Accepted** | 2026-10-07 (updated 2026-10-09) | Developer, with the client's answers | Brief · B-06, B-08 · F-04 (answered) · defaults for R-09, R-11, R-12, R-13 |
 
 ## Context
 
@@ -17,7 +17,7 @@
   - Revision 1 is the Départ as signed.
   - Each amendment, for example an extension, is a new revision with a full snapshot of the contract terms, a reason, its author and the time.
 - **Snapshot:** at signature, a revision stores the client and vehicle values as printed. Later edits to the client or vehicle records never change a signed contract.
-- **Retour:** a separate record added to the contract. It holds the return time, km, fuel, new damage or RAS, comments, the final pricing lines and an optional signature.
+- **Retour:** a separate record added to the contract. It holds the return time, km, fuel, new damage or RAS, comments, the final pricing lines and the client's return signature, which is mandatory (F-04). Until the client signs, the Retour stays in progress ([ADR-0009](0009-signatures.md)).
 - **Contract states** (diagram below):
   - draft → active when the Départ is signed;
   - active → closed when the Retour is completed;
@@ -91,6 +91,10 @@ stateDiagram-v2
 ## Revisit when
 
 Legal advice (L-01, L-07) requires a different evidence model.
+
+## Changes
+
+- 2026-10-09: wording aligned with F-04: the client's return signature is mandatory, so a Retour is completed only when the client signs. The UML state machines in `docs/architecture/` show both lifecycles.
 
 ## Implemented by
 
